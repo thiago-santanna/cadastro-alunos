@@ -34,4 +34,6 @@ public class Aluno {
         Nome = nome;
         Idade = idade;
     }
+
+    public Aluno(){}
 }
