@@ -17,7 +17,7 @@ public class ServiceAluno {
                     .filter(aluno -> aluno.getNome().contains(nome)).collect(Collectors.toList())
                     .stream().filter(aluno -> aluno.getIdade().equals(idade));
 
-            if(stm == null){
+            if(stm.count() == 0){
                 throw new AlunoNaoEncontradoException("Aluno não encontrado!");
             }
             else{
@@ -26,24 +26,25 @@ public class ServiceAluno {
         }
 
         if(nome != null){
-            Stream<Aluno>stm = alunos.stream().filter(aluno -> aluno.getNome().contains(nome));
-            if(stm == null){
+            Stream<Aluno> stm = alunos.stream().filter(aluno -> aluno.getNome().contains(nome));
+            if(alunos.stream().filter(aluno -> aluno.getNome().contains(nome)).count() == 0){
+                System.out.println("passei 1");
                 throw new AlunoNaoEncontradoException("Aluno não encontrado!");
             }else{
+                System.out.println("passei 2");
                 return stm.collect(Collectors.toList());
             }
         }
 
         if(idade != null){
             Stream<Aluno> stm = alunos.stream().filter(aluno -> aluno.getIdade().equals(idade));
-            if(stm == null){
+            if(alunos.stream().filter(aluno -> aluno.getIdade().equals(idade)).count() == 0){
                 throw new AlunoNaoEncontradoException("Aluno não encontrado!");
             }
             else{
                 return stm.collect(Collectors.toList());
             }
         }
-
         throw new AlunoNaoEncontradoException("Aluno não encontrado!");
     }
 
