@@ -2,34 +2,55 @@ package com.tsswebapps.Curso.CadastroAluno;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ServiceAluno {
     public ServiceAluno(){}
 
-    public List<Aluno> findAllService( String nome, Integer idade, List<Aluno> alunos){
+    public List<Aluno> findAllService( String nome, Integer idade, List<Aluno> alunos) throws AlunoNaoEncontradoException {
+        if(nome == null && idade == null) {
+            return alunos;
+        }
+
         if(nome != null && idade != null){
-            return alunos.stream()
+            Stream<Aluno>stm = alunos.stream()
                     .filter(aluno -> aluno.getNome().contains(nome)).collect(Collectors.toList())
-                    .stream().filter(aluno -> aluno.getIdade().equals(idade)).collect(Collectors.toList());
+                    .stream().filter(aluno -> aluno.getIdade().equals(idade));
+
+            if(stm == null){
+                throw new AlunoNaoEncontradoException("Aluno não encontrado!");
+            }
+            else{
+                return stm.collect(Collectors.toList());
+            }
         }
 
         if(nome != null){
-            return alunos.stream()
-                    .filter(aluno -> aluno.getNome().contains(nome)).collect(Collectors.toList());
+            Stream<Aluno>stm = alunos.stream().filter(aluno -> aluno.getNome().contains(nome));
+            if(stm == null){
+                throw new AlunoNaoEncontradoException("Aluno não encontrado!");
+            }else{
+                return stm.collect(Collectors.toList());
+            }
         }
 
         if(idade != null){
-            return alunos.stream()
-                    .filter(aluno -> aluno.getIdade().equals(idade)).collect(Collectors.toList());
+            Stream<Aluno> stm = alunos.stream().filter(aluno -> aluno.getIdade().equals(idade));
+            if(stm == null){
+                throw new AlunoNaoEncontradoException("Aluno não encontrado!");
+            }
+            else{
+                return stm.collect(Collectors.toList());
+            }
         }
 
-        return alunos;
+        throw new AlunoNaoEncontradoException("Aluno não encontrado!");
     }
 
-    public Aluno findByIdService(Integer id, List<Aluno> alunos){
+    public Aluno findByIdService(Integer id, List<Aluno> alunos) throws AlunoNaoEncontradoException {
         return alunos.stream()
                 .filter( alu -> alu.getId().equals(id))
-                .findFirst().orElse(null);
+                .findFirst().orElseThrow(() -> new AlunoNaoEncontradoException( "Aluno não existe na base de dados " ));
     }
 
     public Aluno insertServive(Aluno aluno, List<Aluno> alunos){

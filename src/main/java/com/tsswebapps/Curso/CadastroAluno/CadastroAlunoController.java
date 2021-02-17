@@ -19,15 +19,24 @@ public class CadastroAlunoController {
     }
 
     @GetMapping
-    public List<Aluno> findAll(
+    public ResponseEntity<List<Aluno>> findAll(
             @RequestParam(required = false) String nome,
             @RequestParam(required = false) Integer idade){
-        return serviceAluno.findAllService(nome, idade, this.Alunos);
+        try {
+            return new ResponseEntity<>(serviceAluno.findAllService(nome, idade, this.Alunos), HttpStatus.OK);
+        }
+        catch (AlunoNaoEncontradoException e){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping("/{id}")
-    public Aluno findById(@PathVariable("id") Integer id){
-        return serviceAluno.findByIdService(id, this.Alunos);
+    public ResponseEntity<Aluno> findById(@PathVariable("id") Integer id){
+        try {
+            return new ResponseEntity<>( serviceAluno.findByIdService(id, this.Alunos), HttpStatus.OK );
+        } catch (AlunoNaoEncontradoException e) {
+            return new ResponseEntity<>( null, HttpStatus.NOT_FOUND );
+        }
     }
 
     @PostMapping
